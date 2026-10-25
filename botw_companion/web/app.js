@@ -1668,6 +1668,12 @@ function renderCompletionBlockers(score) {
     }).join("");
 }
 
+function formatUnit(value, unit, options = {}) {
+    return new Intl.NumberFormat(BOTWI18n.formatLocale, {
+        style: "unit", unit, unitDisplay: "short", ...options
+    }).format(value);
+}
+
 function bloodMoonDuration(seconds) {
     if (
         seconds == null ||
@@ -1684,14 +1690,14 @@ function bloodMoonDuration(seconds) {
         minutes = Math.ceil((total % 3600) / 60);
 
     if (hours && minutes) {
-        return `${hours} h ${minutes.toString().padStart(2, "0")} min`;
+        return `${formatUnit(hours, "hour")} ${formatUnit(minutes, "minute")}`;
     }
 
     if (hours) {
-        return `${hours} h`;
+        return formatUnit(hours, "hour");
     }
 
-    return `${Math.max(1, minutes)} min`;
+    return formatUnit(Math.max(1, minutes), "minute");
 }
 
 const BLOOD_MOON_VISUAL_THRESHOLDS = [
@@ -2880,7 +2886,7 @@ function renderFilterNav() {
                                 progress =
                                     trackable.length
                                         ? `${done.toLocaleString(BOTWI18n.formatLocale)}/${trackable.length.toLocaleString(BOTWI18n.formatLocale)}`
-                                        : `${items.length.toLocaleString(BOTWI18n.formatLocale)} pts`,
+                                        : BOTWI18n.t("renderfilternav-point-count", {value0: items.length.toLocaleString(BOTWI18n.formatLocale)}),
                                 hint =
                                     trackable.length
                                         ? BOTWI18n.t("renderfilternav-completed-of", {value0: String(done), value1: String(done > 1 ? 's' : ''), value2: String(trackable.length), count: done})
@@ -4681,8 +4687,11 @@ async function importManualFile(file) {
 
 function formatDistance(value) {
     return value >= 1000
-        ? `${(value / 1000).toFixed(value >= 10000 ? 1 : 2)} km`
-        : `${Math.round(value)} m`
+        ? formatUnit(value / 1000, "kilometer", {
+            minimumFractionDigits: value >= 10000 ? 1 : 2,
+            maximumFractionDigits: value >= 10000 ? 1 : 2
+        })
+        : formatUnit(Math.round(value), "meter")
 }
 
 function toggleRouteItem(id) {

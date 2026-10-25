@@ -17100,5 +17100,13 @@
     "rich": false,
     "markup": [],
     "browser": false
+  },
+  "renderfilternav-point-count": {
+    "params": [
+      "value0"
+    ],
+    "rich": false,
+    "markup": [],
+    "browser": true
   }
 }

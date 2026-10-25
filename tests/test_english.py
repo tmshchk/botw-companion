@@ -220,7 +220,10 @@ class EnglishTests(unittest.TestCase):
                 return
             if isinstance(a, dict):
                 self.assertEqual(a.keys(), b.keys())
-                for k in a: walk(a[k], b[k], k)
+                for k in a:
+                    display_scope = (k == 'scope' and isinstance(a.get('progress'), dict)
+                                     and 'label' in a and isinstance(a[k], str))
+                    walk(a[k], b[k], 'profile_description' if display_scope else k)
             elif isinstance(a, list):
                 self.assertEqual(len(a), len(b))
                 for x, y in zip(a, b): walk(x, y, field)
